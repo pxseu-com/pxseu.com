@@ -1,8 +1,13 @@
 import { Request } from "express";
 import { redis } from "../../db/redis";
 
-const createKey = (req: Request, rateLimitId: string) =>
-	`rate_limit:${encodeURIComponent(rateLimitId)}:${encodeURIComponent(req.user ? req.user.auth_key : req.ip)}`;
+const createKey = (req: Request, rateLimitId: string) =>{
+	const suffix = req.user ? req.user.auth_key : req.ip;
+
+	if (!suffix) throw new Error("No suffix");
+
+	return `rate_limit:${encodeURIComponent(rateLimitId)}:${encodeURIComponent(suffix)}`;
+};
 
 export const getRateLimit = async (req: Request, rateLimitId: string): Promise<number | null> => {
 	const rateLimitInRedis = await redis.get(createKey(req, rateLimitId));
