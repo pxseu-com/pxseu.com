@@ -1,6 +1,0 @@
-public/robots.txt
-public/sitemap.xml
-public/sw.js
-public/workbox-*.js
-./out
-node_modules/
